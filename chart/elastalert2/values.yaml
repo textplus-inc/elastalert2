@@ -293,8 +293,11 @@ extraVolumeMounts: []
 extraPorts: []
 # Example:
 # extraPorts:
-#   - name: grpc
-#     containerPort: 9090
+#   - name: http
+#     containerPort: 3030
+#     protocol: TCP
+#   - name: websocket
+#     containerPort: 3333
 #     protocol: TCP
 
 ## @section Metrics parameters
