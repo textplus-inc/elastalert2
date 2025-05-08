@@ -1,0 +1,32 @@
+{{- range .Values.persistentVolumes }}
+{{- if not .existingClaim }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ printf "%s-%s" (include "elastalert.fullname" $) .name }}
+  namespace: {{ include "common.names.namespace" $ | quote }}
+  labels:
+    {{- if $.Values.commonLabels }}
+    {{- include "common.tplvalues.render" ( dict "value" $.Values.commonLabels "context" $ ) | nindent 4 }}
+    {{- end }}
+    app: {{ template "elastalert.name" $ }}
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+  annotations:
+    {{- if $.Values.pvcAnnotations }}
+    {{- include "common.tplvalues.render" (dict "value" $.Values.pvcAnnotations "context" $) | nindent 4 }}
+    {{- end }}
+    {{- if .annotations }}
+    {{- include "common.tplvalues.render" (dict "value" .annotations "context" $) | nindent 4 }}
+    {{- end }}
+spec:
+  accessModes:
+{{ toYaml .accessModes | indent 4 }}
+  resources:
+    requests:
+      storage: {{ .size }}
+  storageClassName: {{ .storageClassName }}
+---
+{{- end }}
+{{- end }}

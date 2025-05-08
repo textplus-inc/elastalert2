@@ -190,6 +190,18 @@ extraConfigOptions: {}
 # specifies the rules volume to be used
 rulesVolumeName: "rules"
 
+# rulesPersistentVolume: Configure a persistent storage volume for storing alert rules
+# If defined, this will mount a PVC instead of using the default ConfigMap or Secret.
+# Useful when you want dynamic or externally managed rule files.
+# rulesPersistentVolume:
+#   mountPath: /opt/elastalert/rules
+#   size: 5Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   storageClassName: standard-rwo
+#   annotations: {}
+#   existingClaim: null
+
 # additional rule configurations e.g. (http://elastalert2.readthedocs.io/en/latest/)
 rules: {}
   # deadman_slack: |-
@@ -288,6 +300,16 @@ extraVolumeMounts: []
   #   mountPath: /opt/elastalert/config-smtp/smtp_auth.yaml
   #   subPath: smtp_auth.yaml
   #   readOnly: true
+
+persistentVolumes: []
+# Example:
+# persistentVolumes:
+#   - name: rules
+#     mountPath: /opt/elastalert/rules
+#     size: 10Gi
+#     accessModes: ["ReadWriteOnce"]
+#     storageClassName: standard-rwo
+#     annotations: {}
 
 # Optional ports for the main container
 extraPorts: []

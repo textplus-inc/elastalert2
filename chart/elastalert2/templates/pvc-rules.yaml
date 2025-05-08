@@ -1,0 +1,25 @@
+{{- with .Values.rulesPersistentVolume }}
+{{- if not .existingClaim }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ printf "%s-rules" (include "elastalert.fullname" $) }}
+  namespace: {{ include "common.names.namespace" $ | quote }}
+  labels:
+    app: {{ template "elastalert.name" $ }}
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+  {{- with .annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+{{ toYaml .accessModes | indent 4 }}
+  resources:
+    requests:
+      storage: {{ .size }}
+  storageClassName: {{ .storageClassName }}
+{{- end }}
+{{- end }}

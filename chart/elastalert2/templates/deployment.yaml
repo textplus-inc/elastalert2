@@ -97,13 +97,24 @@ spec:
           - name: config
             mountPath: '/opt/elastalert/config.yaml'
             subPath: config.yaml
+{{- if .Values.rulesPersistentVolume }}
+          - name: rules
+            mountPath: {{ .Values.rulesPersistentVolume.mountPath }}
+{{- else }}
           - name: {{ .Values.rulesVolumeName }}
             mountPath: {{ .Values.rulesFolder }}
+{{- end }}
 {{- if .Values.elasticsearch.certsVolumeMounts }}
 {{ toYaml .Values.elasticsearch.certsVolumeMounts | indent 10 }}
 {{- end }}
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 10 }}
+{{- end }}
+{{- if .Values.persistentVolumes }}
+{{- range .Values.persistentVolumes }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+{{- end }}
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -150,7 +161,13 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
 {{- end }}
       volumes:
+
+{{- if .Values.rulesPersistentVolume }}
         - name: rules
+          persistentVolumeClaim:
+            claimName: {{ if .Values.rulesPersistentVolume.existingClaim }}{{ .Values.rulesPersistentVolume.existingClaim }}{{ else }}{{ printf "%s-rules" (include "elastalert.fullname" .) }}{{ end }}
+{{- else }}
+        - name: {{ .Values.rulesVolumeName }}
 {{- if .Values.secretRulesName }}
           secret:
             secretName: {{ .Values.secretRulesName }}
@@ -166,6 +183,7 @@ spec:
 {{- range $key, $value := .Values.rules }}
             - key: {{ $key }}
               path: {{ $key}}.yaml
+{{- end }}
 {{- end }}
 {{- end }}
         - name: config
@@ -184,4 +202,16 @@ spec:
 {{- end }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
+{{- if .Values.persistentVolumes }}
+{{- range .Values.persistentVolumes }}
+        - name: {{ .name }}
+{{- if .existingClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .existingClaim }}
+{{- else }}
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-%s" (include "elastalert.fullname" $) .name }}
+{{- end }}
+{{- end }}
 {{- end }}
