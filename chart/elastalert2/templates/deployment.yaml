@@ -62,11 +62,16 @@ spec:
       - name: elastalert
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{- if .Values.metrics.enabled }}
+{{- if or .Values.metrics.enabled .Values.extraPorts }}
         ports:
-        - containerPort: {{ .Values.metrics.prometheusPort }}
-          protocol: TCP
-          name: {{ .Values.metrics.prometheusPortName }}
+{{- if .Values.metrics.enabled }}
+          - containerPort: {{ .Values.metrics.prometheusPort }}
+            protocol: TCP
+            name: {{ .Values.metrics.prometheusPortName }}
+{{- end }}
+{{- if .Values.extraPorts }}
+{{ toYaml .Values.extraPorts | indent 10 }}
+{{- end }}
 {{- end }}
 {{- if .Values.securityContext }}
         securityContext:

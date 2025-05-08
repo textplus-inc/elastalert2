@@ -8,7 +8,7 @@ appKubernetesIoComponent: elastalert2
 
 # Folder where Helm can find local rules prior to deployment to the k8s cluster. By default,
 # 'rules' folder must be located in the root of the chart directory. Note that this setting
-# will override the rules and secretRulesName values. Again, these rules are only read 
+# will override the rules and secretRulesName values. Again, these rules are only read
 # during the time of the chart deployment (installation) into the cluster.
 # rootRulesFolder: "rules"
 # enabledRules: ["deadman_slack", "deadman_pagerduty"]
@@ -289,6 +289,13 @@ extraVolumeMounts: []
   #   subPath: smtp_auth.yaml
   #   readOnly: true
 
+# Optional ports for the main container
+extraPorts: []
+# Example:
+# extraPorts:
+#   - name: grpc
+#     containerPort: 9090
+#     protocol: TCP
 
 ## @section Metrics parameters
 
