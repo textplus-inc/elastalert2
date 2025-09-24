@@ -1,13 +1,39 @@
 # 2.TBD.TBD
 
 ## Breaking changes
+- None
+
+## New features
+- Add support for loading custom Jinja2 filters - [#1700](https://github.com/jertel/elastalert2/pull/1700) - @anroots-by
+
+## Other changes
+- Fix percentile metric_aggregation rule error for rules with compound query keys - [#1701](https://github.com/jertel/elastalert2/pull/1701) - @jhatcher1
+
+# 2.26.0
+
+## Breaking changes
+- None
+
+## New features
+- Now supporting Elasticsearch 9 and OpenSearch 3 - [#1682](https://github.com/jertel/elastalert2/pull/1682) - @jertel
+
+## Other changes
+- Removed specific version requirement for Elastic Kibana and OpenSearch Discover - [#1682](https://github.com/jertel/elastalert2/pull/1682) - @jertel
+- If `--end` argument falls in the past then at least one full run cycle will now complete before exiting - [#1694](https://github.com/jertel/elastalert2/pull/1694) - @nkormakov
+- Add support for a `ES_VERSION` environment variable to override the Elasticsearch version - [#1690](https://github.com/jertel/elastalert2/pull/1690) - @fabian-heib
+
+# 2.25.0
+
+## Breaking changes
 - [Helm] An unlikely breaking change could occur if this chart was previously deployed with namespace overrides. Deploy to a pre-prod environment before proceeding with production. - [#1662](https://github.com/jertel/elastalert2/pull/1662) - @lepouletsuisse
 
 ## New features
-- None
+- [ServiceNow] Include arbitrary fields in ServiceNow tickets by including a `service_now_additional_fields` configuration stanza. - [#1670](https://github.com/jertel/elastalert2/pull/1670) - @mitchell-es
+- [SMSEagle] New SMSEagle alerter - [#1671](https://github.com/jertel/elastalert2/pull/1671) - @marcin-smseagle
 
 ## Other changes
 - [Helm] Fix `--namespace` and `namespaceOverride` value in Helm charts - [#1662](https://github.com/jertel/elastalert2/pull/1662) - @lepouletsuisse
+- [Pager Duty] Expand `pagerduty_v2_payload_custom_details` to allow defaulting to value of provided key:value pair if the value is not found as a key in an elastalert match. - [#1674](https://github.com/jertel/elastalert2/pull/1674) - @mark-trellix
 
 # 2.24.0
 
@@ -20,7 +46,6 @@
 - Support jinja2 templates in `alertmanager_labels` and `alertmanager_annotations` - [#1642](https://github.com/jertel/elastalert2/pull/1642) - @tgxworld
 - [Helm] Add support of update strategy in the deployment [#1646](https://github.com/jertel/elastalert2/pull/1646) - @efazenda
 - Add Flashduty alerter - [#1649](https://github.com/jertel/elastalert2/pull/1649) - @pijiang3
-
 
 ## Other changes
 - Fix `schema.yaml` to support Kibana 8.17 - [#1631](https://github.com/jertel/elastalert2/pull/1631) - @vpiserchia

@@ -18,7 +18,7 @@ elastalert2 container image on `Docker Hub <https://hub.docker.com/r/jertel/elas
 
 Be aware that the ``latest`` tag of the image represents the latest commit into
 the master branch. If you prefer to upgrade more slowly you will need utilize a
-versioned tag, such as ``2.24.0`` instead, or ``2`` if you are comfortable with
+versioned tag, such as ``2.26.0`` instead, or ``2`` if you are comfortable with
 always using the latest released version of ElastAlert 2.
 
 A properly configured config.yaml file must be mounted into the container during
@@ -144,7 +144,7 @@ challenging due to the numerous differences between everyone's environment.
 Requirements
 ------------
 
-- Elasticsearch 7.x or 8.x, or OpenSearch 1.x or 2.x
+- Elasticsearch 7, 8, or 9 or OpenSearch 1, 2, or 3
 - ISO8601 or Unix timestamped data
 - Python 3.13. Require OpenSSL 3.0.8 or newer. Note that Python 3.12 is still supported but will be removed in a future release.
 - pip

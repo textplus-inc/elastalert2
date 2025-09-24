@@ -48,6 +48,7 @@ or
       - servicenow
       - ses
       - slack
+      - smseagle
       - sns
       - stomp
       - telegram
@@ -1895,7 +1896,7 @@ See https://developer.pagerduty.com/api-reference/b3A6Mjc0ODI2Nw-send-an-event-t
 
 ``pagerduty_v2_payload_source_args``: If set, and ``pagerduty_v2_payload_source`` is a formattable string, ElastAlert 2 will format the source based on the provided array of fields from the rule or match.
 
-``pagerduty_v2_payload_custom_details``: List of keys:values to use as the content of the custom_details payload. Example - ip:clientip will map the value from the clientip index of Elasticsearch to JSON key named ip.
+``pagerduty_v2_payload_custom_details``: List of keys:values to use as the content of the custom_details payload. For each key:value, it first attempts to map the provided value by checking if it exists as a key in an elastalert match. If a match is found, it assigns the corresponding value from the elastalert match. If no match is found, it then defaults to using the original provided value directly.
 
 ``pagerduty_v2_payload_include_all_info``: If True, this will include the entire Elasticsearch document as a custom detail field called "information" in the PagerDuty alert.
 
@@ -2034,7 +2035,7 @@ For more details, you can refer the `Squadcast documentation <https://support.sq
 ServiceNow
 ~~~~~~~~~~
 
-The ServiceNow alerter will create a ne Incident in ServiceNow. The body of the notification is formatted the same as with other alerters.
+The ServiceNow alerter will create a new Incident in ServiceNow. The body of the notification is formatted the same as with other alerters.
 
 The alerter requires the following options:
 
@@ -2082,7 +2083,17 @@ Example usage::
     cmdb_ci: "xxxxxx"
     caller_id: "xxxxxx"
     servicenow_impact: 1
-    servicenow_urgenc: 3
+    servicenow_urgency: 3
+
+Arbitrary ServiceNow fields:
+
+ElastAlert 2 supports setting any arbitrary ServiceNow field that your ServiceNow instance supports. Additional fields must be specified in a `service_now_additional_fields` stanza. For example, if you had a custom field, called "Affected User", you can set it by providing that field name and value. The field needs to be specified using the Column Name not the Display Name. Custom fields in ServiceNow usually have the prefix ``u_`` to distinguish them from out of the box fields. 
+
+Example usage::
+
+    service_now_additional_fields:
+        u_affected_user: 'Sample User'
+        u_affected_site: 'Sample Location'
 
 Slack
 ~~~~~
@@ -2215,6 +2226,47 @@ Example slack_attach_opensearch_discover_url, slack_opensearch_discover_color, s
 ``slack_jira_ticket_color``: The color of the Jira Ticket url attachment. Defaults to ``#ec4b98``.
 
 ``slack_jira_ticket_title``: The title of the Jira Ticket url attachment. Defaults to ``Jira Ticket``.
+
+
+SMSEagle
+~~~~~~~~
+
+SMSEagle alerter will send API requests to SMSEagle device and then forward it as an SMS or Call, depending on your configuration.
+
+The alerter requires the following option:
+
+``smseagle_url``: Address of your SMSEagle device, e.g. http://192.168.1.101
+
+``smseagle_token``: API access token (per user, can be generated in menu Users > Access to API)
+
+``smseagle_message_type``: Message/call type to send/queue. Available values: sms, ring, tts, tts_adv respectively for SMS, Ring call, TTS call and Advanced TTS call.
+
+Requires one of:
+
+``smseagle_to``: Phone number(s) to which you want to send a message
+
+``smseagle_contacts``: Name(s) of contact(s) from the SMSEagle Phonebook to which you want to send a message
+
+``smseagle_groups``: Name(s) of group(s) from the SMSEagle Phonebook to which you want to send a message
+
+Optional:
+
+``smseagle_duration``: Call duration, required for Ring, TTS and Advanced TTS call. Default value: 10
+
+``smseagle_voice_id``: ID of the voice model, required for Advanced TTS call. Default value: 1
+
+``smseagle_text``: Override notification text with a custom one
+
+Example usage::
+
+    alert:
+      - "smseagle"
+    smseagle_url: "https://192.168.1.101"
+    smseagle_token: "123abc456def789"
+    smseagle_message_type: "sms"
+    smseagle_to: ["+123456789", "987654321"]
+    smseagle_contacts: [2, 7]
+
 
 Splunk On-Call (Formerly VictorOps)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
